@@ -1,0 +1,24 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Pi (peer dependency, for the theme-switch test)
+        run: npm install --no-save --no-package-lock @earendil-works/pi-coding-agent
+      - name: Verify bundle contents and syntax
+        run: node scripts/verify-bundle.mjs
+      - name: Theme-switch checks
+        run: node scripts/theme-switch.test.mjs
+      - name: Status-line widget repaint checks
+        run: node scripts/status-line-widget.test.mjs

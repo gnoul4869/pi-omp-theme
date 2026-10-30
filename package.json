@@ -1,0 +1,63 @@
+{
+  "name": "pi-omp-theme",
+  "version": "0.1.0",
+  "description": "Pi theme and TUI presentation package: Titanium themes plus a status line, editor, message and tool rendering that follow Pi's /settings theme.",
+  "license": "MIT",
+  "author": "gnoul_ <ttluong4869@gmail.com> (https://github.com/gnoul4869)",
+  "maintainers": [
+    "gnoul_ <ttluong4869@gmail.com> (https://github.com/gnoul4869)"
+  ],
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gnoul4869/pi-omp-theme.git"
+  },
+  "homepage": "https://github.com/gnoul4869/pi-omp-theme#readme",
+  "bugs": {
+    "url": "https://github.com/gnoul4869/pi-omp-theme/issues"
+  },
+  "keywords": [
+    "pi-package",
+    "pi",
+    "pi-extension",
+    "pi-theme",
+    "pi-coding-agent",
+    "omp",
+    "oh-my-pi",
+    "extension",
+    "tui",
+    "terminal-theme",
+    "status-line",
+    "theme"
+  ],
+  "pi": {
+    "extensions": [
+      "./dist/extensions/pi-omp-theme.ts"
+    ],
+    "themes": [
+      "./themes"
+    ],
+    "image": "https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/gallery-preview.png?v=gallery-5"
+  },
+  "files": [
+    "dist/**/*.ts",
+    "themes",
+    "README.md",
+    "docs/theme-switching.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "verify": "node scripts/verify-bundle.mjs",
+    "test": "node scripts/theme-switch.test.mjs",
+    "testWidgets": "node scripts/status-line-widget.test.mjs",
+    "check": "npm run verify && npm run test && npm run testWidgets"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  }
+}

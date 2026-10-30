@@ -1,0 +1,336 @@
+# pi-omp-theme
+
+[![verify](https://github.com/gnoul4869/pi-omp-theme/actions/workflows/verify.yml/badge.svg)](https://github.com/gnoul4869/pi-omp-theme/actions/workflows/verify.yml)
+[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+An OMP-inspired visual theme and TUI presentation extension for [Pi](https://pi.dev). It combines Titanium dark/light themes with a coordinated startup view, status line, editor, messages, and tool rendering, and keeps whatever theme you choose in `/settings → Theme` — bundled, built-in, or your own — working across restarts.
+
+Install it with one command:
+
+```bash
+pi install git:github.com/gnoul4869/pi-omp-theme
+```
+
+![pi-omp-theme surface gallery](https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/gallery-preview.png?v=gallery-5)
+
+## Surface gallery
+
+The gallery is more than a logo preview: it shows the surfaces people see in a real Pi session. These representative Pi 0.84.2 captures use the Titanium dark theme, Unicode glyphs, a 120-column terminal, and sample local project data. Click any thumbnail for the full-size image.
+
+| Surface | What it demonstrates | Full-size preview |
+|---|---|---|
+| **Welcome** | Startup resources, tool providers, and recent sessions | [open `welcome.png`](https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/welcome.png?v=gallery-5) |
+| **Read** | Quiet, single-line file reads with a readable path | [open `read.png`](https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/read.png) |
+| **List** | Bounded directory output rendered as a tree | [open `list.png`](https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/list.png) |
+| **Grep** | Match counts, file grouping, context, and truncation | [open `grep.png`](https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/grep.png) |
+| **Tool call** | Boxed command, response, exit status, and elapsed time | [open `tool-call.png`](https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/tool-call.png) |
+| **Status line** | Model, effort, path, Git state, and context usage | [open `status-line.png`](https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/status-line.png) |
+
+<table>
+  <tr>
+    <td width="50%"><strong>Welcome</strong><br><a href="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/welcome.png?v=gallery-5"><img src="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/welcome.png?v=gallery-5" alt="Welcome screen with resources, providers, and recent sessions" width="100%"></a></td>
+    <td width="50%"><strong>Read</strong><br><a href="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/read.png"><img src="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/read.png" alt="Compact read tool surface" width="100%"></a></td>
+  </tr>
+  <tr>
+    <td><strong>List</strong><br><a href="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/list.png"><img src="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/list.png" alt="List tool rendered as a bounded tree" width="100%"></a></td>
+    <td><strong>Grep</strong><br><a href="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/grep.png"><img src="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/grep.png" alt="Grep results grouped by file with match context" width="100%"></a></td>
+  </tr>
+  <tr>
+    <td><strong>Tool call</strong><br><a href="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/tool-call.png"><img src="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/tool-call.png" alt="Boxed tool call with output, exit status, and elapsed time" width="100%"></a></td>
+    <td><strong>Status line</strong><br><a href="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/status-line.png"><img src="https://raw.githubusercontent.com/gnoul4869/pi-omp-theme/main/media/status-line.png" alt="Responsive status line with model, Git, and context usage" width="100%"></a></td>
+  </tr>
+</table>
+
+Install it in Pi with one command:
+
+```bash
+pi install git:github.com/gnoul4869/pi-omp-theme
+```
+
+Refresh it later with `pi update git:github.com/gnoul4869/pi-omp-theme` (or `pi update --extensions`).
+
+## Features
+
+- Claude-style and OMP-style editor/status compositions.
+- Responsive status segments for model, effort, path, Git, context, usage, cost, time, and session state.
+- Compact startup header or optional welcome card.
+- Boxed tool rendering, quiet-call batching, adaptive diffs, elapsed time, and completed-turn summaries.
+- Optional Claude Code transcript (`claude-code` preset): `● Tool(args)` calls with a `⎿` result gutter, marked answers, one-line thinking, edit sentences, an interrupt prompt, and a working row with run time and tokens.
+- Optional message/tool compatibility patches with per-surface identity checks and native fallback.
+- Titanium dark/light themes, Nerd Font/Unicode/ASCII modes, shimmer, syntax-highlight caching, and session accents.
+- Theme selection that follows Pi's `/settings`: nothing is forced at session start, and the status line, editor border, tool boxes, and diffs recolour as soon as you switch.
+
+## Requirements
+
+- Node.js 22.19 or newer.
+- Pi 0.83.x or newer. Compatibility patches are probed against the live Pi runtime per surface; Pi version numbers are diagnostic only, so unrelated releases keep the themed TUI when the patched method contracts remain unchanged. Unrecognized contracts fall back to Pi's native rendering.
+
+## Install
+
+Use Pi's package manager so the extension and themes are registered correctly:
+
+```bash
+pi install git:github.com/gnoul4869/pi-omp-theme
+```
+
+Running `npm install` alone downloads the package but does not register it with Pi.
+
+This fork commits the built extension bundle, so there is **no build step** — Pi loads `dist/extensions/pi-omp-theme.ts` directly through jiti.
+
+### Verify installation
+
+```bash
+pi list
+pi -p "/pi-omp-theme doctor"
+```
+
+`pi list` should include `git:github.com/gnoul4869/pi-omp-theme`. The doctor summary reports the active preset, Pi compatibility identity, surface fallbacks, and host binding; `Host binding` should read `bound`. Use `/pi-omp-theme doctor json` when you need the complete field-level payload.
+
+### Install from a local checkout
+
+```bash
+git clone https://github.com/gnoul4869/pi-omp-theme.git
+cd pi-omp-theme
+npm run check                  # fork patch checks + bundle syntax check
+pi install <path-to-checkout>
+```
+
+The compiled entry is `dist/extensions/pi-omp-theme.ts` on purpose. Pi loads extensions through jiti, which applies the host aliases (`@earendil-works/*` → the running Pi's own modules) while loading the `.ts` entry. A `.js` entry next to a checkout's `node_modules/@earendil-works/pi-coding-agent` can bind the extension to a second copy of Pi and make message/tool decoration silently miss the TUI. Pi 0.84.3+ runs its Node CLI/RPC entrypoints from a bundled runtime and exposes those host modules virtually; the package detects that loader path instead of comparing it with the modular package entry. If the doctor ever reports `hostBinding.status: "foreign"`, the extension was loaded outside Pi's loader; reinstall with `pi install git:github.com/gnoul4869/pi-omp-theme`.
+
+```bash
+# Project scripts (no build toolchain needed)
+npm run verify        # assert the recorded fixes are present + bundle syntax
+npm run test          # theme-switch checks against the real Pi theme module
+npm run testWidgets   # mount the status-line widget and prove it repaints on theme change
+npm run check         # verify + test + testWidgets
+```
+
+The first launch after a rebuild transpiles the bundle once (a few seconds); jiti caches the result for later launches.
+
+### Update
+
+```bash
+pi update git:github.com/gnoul4869/pi-omp-theme
+# Or update every installed Pi package:
+pi update --extensions
+```
+
+### Uninstall
+
+```bash
+pi remove git:github.com/gnoul4869/pi-omp-theme
+```
+
+## Defaults
+
+The shipped configuration uses the `claude` preset with a dock editor, a status row below the editor, compact startup presentation, boxed tools, and completed-turn summaries. Core compatibility patches remain disabled unless explicitly enabled.
+
+**Local change:** `theme.autoApply` defaults to `"off"` (the original shipped `"titanium"`), so the theme stored in Pi's settings is respected and never rewritten by this extension. Force a theme anyway with:
+
+```json
+{
+  "piOmpTheme": {
+    "theme": { "autoApply": "titanium" }
+  }
+}
+```
+
+or the `PI_OMP_THEME_THEME` environment variable.
+
+## Presets
+
+`claude`, `claude-code`, `omp`, `default`, `minimal`, `compact`, `full`, `ascii`, and `native`.
+
+### Claude Code transcript
+
+The `claude-code` preset keeps the `claude` composer and status row and renders the transcript the way Claude Code does:
+
+```text
+● The expiry check compared with < instead of <=.
+
+● Thought for 6.2s · Ctrl+T to show
+
+● Bash(npm test -- auth)
+  ⎿  … +18 earlier lines · Ctrl+O to expand
+     ✕ rejects expired tokens (12 ms)
+     ✘ Exit 1 · 2.2s · ~41 words
+
+● Edit(src/auth.ts)
+  ⎿  Updated src/auth.ts with 1 addition and 1 removal
+     +1 −1 · 0.2s
+     -  42  if (exp < now) return true;
+     +  42  if (exp <= now) return true;
+
+● Read 1 file, ran 2 shell commands · 6.7s · Ctrl+O to expand
+
+⣾ Working... (14s · ↓ 1.2k tokens · Escape to interrupt)
+```
+
+```json
+{
+  "piOmpTheme": {
+    "preset": "claude-code"
+  }
+}
+```
+
+Each part is an ordinary option, so it can also be enabled on its own:
+
+| Option | Effect |
+|---|---|
+| `tools.chrome: "inline"` | Tool calls render as `● Name(args)` with a `⎿` result gutter instead of a frame. The marker colour shows the status (running, done, failed); todo lists render as a checklist. |
+| `messages.assistantMarker: true` | Each assistant answer starts with `●`, its lines hanging under it. Your messages start with the prompt's `❯` (or your `theme.glyphs.prompt`): their band starts under the `●`, covers only the text rows, and their text lines up with the answers. Replaces the `messages.assistantPrefix` gutter. |
+| `messages.thinkingSummary: true` | Hidden thinking reads `● Thinking…` while it streams and `● Thought for 6s` afterwards; click it or press the thinking toggle to show it. Restored sessions show `● Thought`. |
+| `theme.workingElapsed: true` | The working row shows the run time: `Working... (14s · Escape to interrupt)`. |
+| `theme.workingTokens: true` | The working row shows the run's output tokens: `(14s · ↓ 1.2k tokens · Escape to interrupt)`. Streamed text counts at about four characters a token until each message reports its real usage. |
+| `tools.editSummary: true` | File changes read like Claude Code's: an inline edit opens with `Updated src/auth.ts with 1 addition and 1 removal` above the `+1 −1 · 0.2s` row and the diff, and a write reads `Wrote 3 lines to notes/todo.txt · 0.2s`. On a row too narrow for it, the sentence shortens to `Updated src/auth.ts` and the write drops its path, so nothing shown before is cut. |
+| `messages.interruptHint: true` | An interrupted turn keeps Pi's notice and adds `· What should the agent do instead?`: `Operation aborted · …` when Esc stops an answer, `Error: This operation was aborted · …` when it stops a tool run. Esc while a tool call's arguments are still streaming shows on that tool block, unchanged. |
+
+The preset also lowers `tools.maxCollapsedLines` to 4. Glyphs follow the Nerd Font/Unicode/ASCII mode and can be overridden through `theme.glyphs` (`toolMarker`, `resultGutter`, `todoDone`, `todoOpen`, `thinkingMarker`); ASCII mode uses `*`, `|`, `[x]`, `[ ]`, and `~`. Message blocks (compaction, skills, branches) and user `!commands` follow the same `●`/`⎿` form, todo lists render as checklists and stay visible after a turn collapses, and the `git`/`gh` cards and `git diff`/`gh run` views hang under the gutter without frames. `grep`, `rg`, `ls`, and `find` run through bash read like the Grep, List, and Find tools (`● Grep(row in src)`).
+
+### Hiding extension widgets
+
+`widgets.hide` keeps chosen extension widgets off screen. The extension keeps running; only its widget is not drawn. For example, the transcript already shows pi-todo's checklist, so its pinned **Updated Plan** box above the editor can go:
+
+```json
+{
+  "piOmpTheme": {
+    "widgets": { "hide": ["pi-todo"] },
+    "compatibility": { "allowCorePatches": true }
+  }
+}
+```
+
+The value is a list of widget keys (pi-todo uses `pi-todo`); other widgets are untouched, and the list is empty by default. It is a core patch, so it needs `compatibility.allowCorePatches`, and `/pi-omp-theme doctor` reports it as **Widgets**. `/todos` still shows the list. Changes to the list take effect on `/reload` or when Pi restarts.
+
+## Configuration
+
+Use the `piOmpTheme` key in Pi's global or trusted project `settings.json`:
+
+```json
+{
+  "piOmpTheme": {
+    "preset": "claude", // claude-code | omp
+    "theme": {
+      "autoApply": "titanium" // optional: force a theme; omit to keep Pi's /settings theme
+    },
+    "compatibility": {
+      "allowCorePatches": false
+    }
+  }
+}
+```
+
+Presets coordinate status placement, editor style/frame, separator, and status layout. Keep those fields omitted when you want the preset's complete composition; for example, changing only `preset` to `"omp"` selects the rounded border layout. Explicit values still win, but `/pi-omp-theme doctor` warns when they contradict coordinated preset fields and produce a hybrid UI.
+
+Precedence:
+
+```text
+defaults < global settings < trusted project settings < environment < session override
+```
+
+Invalid values fall back safely and appear in `/pi-omp-theme doctor`.
+
+### Read-only tool activation
+
+By default, the theme leaves Pi's active tool set unchanged. This prevents it from
+re-enabling tools intentionally disabled by extensions such as `pi-hashline-edit-pro`.
+Package order is not a workaround you need with this default.
+
+To explicitly add registered `grep`, `find`, and `ls` tools at session start:
+
+```json
+{
+  "piOmpTheme": {
+    "readonlyTools": true
+  }
+}
+```
+
+Set `readonlyTools` to `false` (the default) to leave tool selection alone. Global
+and trusted-project settings follow the normal configuration precedence. A disabled
+extension (`enabled: false` or `PI_OMP_THEME_DISABLED=1`) never activates tools.
+
+For one invocation, override the setting with an explicit CLI value:
+
+```bash
+pi --pi-omp-theme-readonly-tools=true
+pi --pi-omp-theme-readonly-tools=false
+```
+
+The space-separated forms (`--pi-omp-theme-readonly-tools true` / `false`) also work.
+**Migration from 1.0.14:** the flag now requires a value; the former bare boolean
+flag is no longer supported. A value-taking flag avoids Pi 0.99.1 interpreting
+`=false` as boolean `true`. Invalid values disable activation and emit a warning.
+
+Activation is checked at session start, including a new session or Pi's `/reload`.
+Editing settings or running `/pi-omp-theme reload` does not change active tools
+mid-session. Opting out never removes tools already enabled by you or another
+extension. Explicit opt-in can still re-enable a tool another extension disabled;
+leave it off when using replacement tools. Pi's `--exclude-tools grep` is also
+available when you need to keep native `grep` inactive while allowing `find` and `ls`.
+
+### Environment variables
+
+| Variable | Purpose |
+|---|---|
+| `PI_OMP_THEME_DISABLED=1` | Disable the extension. |
+| `PI_OMP_THEME_NERD_FONTS=1\|0` | Force Nerd Font or non-Nerd glyphs. |
+| `PI_OMP_THEME_EDITOR=native\|compact\|boxed\|dock` | Override editor style. |
+| `PI_OMP_THEME_STATUS=above\|below\|off` | Override status placement/state. |
+| `PI_OMP_THEME_THEME=<name\|off>` | Select or disable automatic theme application. |
+| `PI_OMP_THEME_OSC11=1\|0` | Override terminal background synchronization. |
+| `PI_OMP_THEME_DEBUG=1` | Enable bounded diagnostics. |
+
+### CLI flags
+
+```text
+--pi-omp-theme-core-patches
+--pi-omp-theme-message-assistant
+--pi-omp-theme-message-special-blocks
+--pi-omp-theme-tools
+--pi-omp-theme-readonly-tools <true|false>
+--pi-omp-theme-ascii
+```
+
+### Commands
+
+| Command | Purpose |
+|---|---|
+| `/pi-omp-theme` | Show active preset and surface state. |
+| `/pi-omp-theme on\|off` | Toggle the extension for the current session. |
+| `/pi-omp-theme preset <name>` | Apply a preset. |
+| `/pi-omp-theme placement above\|below\|border` | Change status placement. |
+| `/pi-omp-theme editor <style> [frame]` | Change editor presentation. |
+| `/pi-omp-theme startup off\|compact\|overlay` | Change startup presentation. |
+| `/pi-omp-theme surface <name> on\|off` | Toggle a surface. |
+| `/pi-omp-theme set <path> <JSON>` | Set a validated configuration leaf. |
+| `/pi-omp-theme persist global\|project set <path> <JSON>` | Persist a validated setting. |
+| `/pi-omp-theme reload` | Reload configuration and affected surfaces. |
+| `/pi-omp-theme doctor` | Show a compact, human-readable health report. |
+| `/pi-omp-theme doctor json` | Show the complete machine-readable diagnostic payload. |
+
+## Privacy and security
+
+Pi extensions execute with the user's system permissions. Review the source before installation.
+
+The extension does not implement telemetry. The optional welcome presentation reads bounded local Pi metadata; its recent-session list can derive a short display title from the opening request in local session files. That data is rendered locally and is not transmitted by this package.
+
+## Development
+
+```bash
+npm run verify          # assert the recorded fixes are present + bundle syntax
+npm run test            # theme-switch checks against the real Pi theme module
+npm run testWidgets     # mount the status-line widget and prove it repaints on theme change
+npm run check           # verify + test + testWidgets
+```
+
+The extension entry is `dist/extensions/pi-omp-theme.ts` on purpose: Pi loads extensions through jiti, which binds the host aliases to the running Pi instance. A compiled `.js` entry next to a checkout's own copy of Pi can bind the extension to a second Pi instance and silently miss the TUI.
+
+Theme switching is documented in [docs/theme-switching.md](docs/theme-switching.md). The bundle is the source of truth: edit `dist/extensions/pi-omp-theme.ts` directly, then run `npm run check`.
+
+## License
+
+[MIT](LICENSE). Required notices from incorporated MIT-licensed sources are retained; this package builds on `@nguyenquangthai/pi-omp-theme` by Nguyen Quang Thai.
+
+The screenshots under `media/` are verbatim copies of the upstream MIT-licensed captures, vendored here so the gallery keeps rendering if upstream ever removes them.
