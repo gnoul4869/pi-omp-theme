@@ -155,11 +155,12 @@ Both Titanium themes, all presets, the status-line layout engine, widgets, tool 
 
 ## Verification
 
-`npm run check` covers three levels:
+`npm run check` covers four levels:
 
 1. **Static** — `scripts/verify-bundle.mjs` greps the shipped bundle for every fix below and syntax-checks it.
 2. **Pi internals** — `scripts/theme-switch.test.mjs` asserts that Pi's theme handle keeps one object identity while forwarding the live theme name, and that `themeIdentityKey` changes across a switch.
 3. **Behaviour** — `scripts/status-line-widget.test.mjs` loads the bundle against a stubbed Pi context, mounts the real status-line widgets, switches the theme, and compares the rendered ANSI output.
+4. **Responsiveness** — `scripts/status-shrink.test.mjs` renders the status row at decreasing widths and asserts the project path collapses level by level before any other segment compacts or moves to the second row. It runs on the stub host modules, so it needs no Pi install.
 
 The third one is the regression proof: against the original shipped bundle it fails three checks —
 
@@ -186,4 +187,5 @@ Manual check in a real session: pick a theme in `/settings → Theme` and watch 
 | `npm run verify` | Assert the recorded fixes are present and the bundle parses |
 | `npm run test` | Run `scripts/theme-switch.test.mjs` against the real Pi theme module (skips when Pi is not resolvable) |
 | `npm run testWidgets` | Mount the status-line widget from the shipped bundle and prove it repaints on a theme change (`scripts/status-line-widget.test.mjs`) |
-| `npm run check` | `verify` + `test` + `testWidgets` |
+| `npm run testShrink` | Render the status row while the terminal narrows and assert the path shrinks first (`scripts/status-shrink.test.mjs`) |
+| `npm run check` | `verify` + `test` + `testWidgets` + `testShrink` |

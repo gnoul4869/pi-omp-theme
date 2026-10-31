@@ -1,6 +1,6 @@
 {
   "name": "pi-omp-theme",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Pi theme and TUI presentation package: Titanium themes plus a status line, editor, message and tool rendering that follow Pi's /settings theme.",
   "license": "MIT",
   "author": "gnoul_ <ttluong4869@gmail.com> (https://github.com/gnoul4869)",
@@ -51,7 +51,8 @@
     "verify": "node scripts/verify-bundle.mjs",
     "test": "node scripts/theme-switch.test.mjs",
     "testWidgets": "node scripts/status-line-widget.test.mjs",
-    "check": "npm run verify && npm run test && npm run testWidgets"
+    "testShrink": "node scripts/status-shrink.test.mjs",
+    "check": "npm run verify && npm run test && npm run testWidgets && npm run testShrink"
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",

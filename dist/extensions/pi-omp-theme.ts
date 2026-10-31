@@ -9602,8 +9602,22 @@ function diffConfig(previous, next) {
 }
 
 // extension-src/omp-theme/domain/status.ts
-function segment(id, priority, render, essential = false) {
-  return { id, defaultPriority: priority, essential, overflow: essential ? "primary" : "secondary", render };
+function segment(id, priority, render, essential = false, shrinkFirst = false) {
+  return { id, defaultPriority: priority, essential, shrinkFirst, overflow: essential ? "primary" : "secondary", render };
+}
+// The project path narrows step by step as the terminal gets narrower: leading
+// segments drop one at a time (marked with an ellipsis) until only the project
+// folder name is left.
+function pathShrinkLevels(value) {
+  const separator = value.includes("\\") ? "\\" : "/";
+  const parts = value.split(/[\\/]+/).filter(Boolean);
+  if (parts.length <= 1) return [value];
+  const levels = [value];
+  for (let kept = parts.length - 1; kept >= 2; kept--) {
+    levels.push(`\u2026${separator}${parts.slice(parts.length - kept).join(separator)}`);
+  }
+  levels.push(parts[parts.length - 1]);
+  return levels;
 }
 function createBuiltinSegments() {
   const segments = [
@@ -9664,13 +9678,17 @@ function createBuiltinSegments() {
     ),
     segment("path", 80, ({ snapshot, theme }) => {
       const name = snapshot.cwd;
+      if (!name) return { visible: false, content: "" };
+      const glyph = theme.glyph("path");
+      const levels = pathShrinkLevels(name).map((level) => theme.apply("path", `${glyph} ${level}`));
       return {
-        visible: Boolean(snapshot.cwd),
-        content: theme.apply("path", `${theme.glyph("path")} ${name ?? ""}`),
-        compactContent: theme.apply("path", name ?? ""),
+        visible: true,
+        content: theme.apply("path", `${glyph} ${name}`),
+        shrinkLevels: levels,
+        compactContent: levels[levels.length - 1] ?? theme.apply("path", `${glyph} ${name}`),
         truncatable: true
       };
-    }),
+    }, false, true),
     segment("git", 75, ({ snapshot, theme }) => {
       const git = snapshot.git;
       if (!git?.available || !git.branch) return { visible: false, content: "" };
@@ -9903,6 +9921,24 @@ function renderGroup(items, separator, padding) {
 function widthOf(items, separator, padding) {
   return visibleWidth(renderGroup(items, separator, padding));
 }
+// Segments flagged `shrinkFirst` give way one step at a time before anything
+// else compacts or drops out: the project path collapses toward its folder name
+// while the rest of the bar keeps its full form.
+function shrinkFirstToFit(candidates, width, separator, padding) {
+  const ladder = candidates.filter((candidate) => candidate.segment.shrinkFirst);
+  if (ladder.length === 0) return;
+  while (widthOf(candidates, separator, padding) > width) {
+    let advanced = false;
+    for (const candidate of ladder) {
+      if (candidate.formIndex >= candidate.forms.length - 1) continue;
+      candidate.formIndex += 1;
+      candidate.content = candidate.forms[candidate.formIndex];
+      advanced = true;
+      if (widthOf(candidates, separator, padding) <= width) return;
+    }
+    if (!advanced) return;
+  }
+}
 function renderStatus(layout, snapshot, width, options) {
   if (width <= 0) return { primary: "", left: "", right: "", lines: [], visibleSegments: [] };
   const separator = options.separator ?? "\u2502";
@@ -9917,7 +9953,11 @@ function renderStatus(layout, snapshot, width, options) {
     try {
       const result = segment2.render(context);
       if (!result.visible || !result.content) continue;
-      candidates.set(id, { id, segment: segment2, result, content: result.content, compact: false, moved: false });
+      const forms = [];
+      for (const form of result.shrinkLevels ?? [result.content, result.compactContent ?? ""]) {
+        if (form && form !== forms[forms.length - 1]) forms.push(form);
+      }
+      candidates.set(id, { id, segment: segment2, result, content: forms[0] ?? result.content, forms, formIndex: 0, moved: false });
     } catch {
     }
   }
@@ -9925,14 +9965,15 @@ function renderStatus(layout, snapshot, width, options) {
     (a, b) => (b.segment.essential ? 1 : 0) - (a.segment.essential ? 1 : 0) || b.segment.defaultPriority - a.segment.defaultPriority
   );
   const secondary = normalized.secondary.map((id) => candidates.get(id)).filter((candidate) => candidate !== void 0);
+  shrinkFirstToFit(primary, width, separator, padding);
   const visible = [];
   const overflow = [];
   for (const candidate of primary) {
     visible.push(candidate);
     if (widthOf(visible, separator, padding) <= width) continue;
-    if (candidate.result.compactContent && !candidate.compact) {
-      candidate.content = candidate.result.compactContent;
-      candidate.compact = true;
+    if (candidate.formIndex < candidate.forms.length - 1) {
+      candidate.formIndex += 1;
+      candidate.content = candidate.forms[candidate.formIndex];
       if (widthOf(visible, separator, padding) <= width) continue;
     }
     visible.pop();

@@ -15,6 +15,9 @@ const checks = [
   ["status-line cache records identity", /themeCache = \{ themeId, config, resolved/],
   ["status line reads the live theme at render time", /const activeTheme = options\.host\?\.theme \?\? currentTheme;/],
   ["tool/working row refreshes captured theme state", /syncThemeDependentState\(piTheme\);/],
+  ["status bar shrinks the flagged segments first", /function shrinkFirstToFit\(candidates, width, separator, padding\) \{/],
+  ["project path collapses folder by folder", /function pathShrinkLevels\(value\) \{/],
+  ["path segment declares its shrink ladder", /shrinkLevels: levels,/],
 ];
 
 let failed = 0;

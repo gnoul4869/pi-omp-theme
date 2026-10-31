@@ -53,6 +53,7 @@ Refresh it later with `pi update git:github.com/gnoul4869/pi-omp-theme` (or `pi 
 
 - Claude-style and OMP-style editor/status compositions.
 - Responsive status segments for model, effort, path, Git, context, usage, cost, time, and session state.
+- Narrow terminals collapse the project path first: leading folders drop one at a time (`📁 D:\Google Drive\Projects\Python\proj` → `📁 …\Python\proj` → `📁 proj`) before any other segment compacts or moves to the second row.
 - Compact startup header or optional welcome card.
 - Boxed tool rendering, quiet-call batching, adaptive diffs, elapsed time, and completed-turn summaries.
 - Optional Claude Code transcript (`claude-code` preset): `● Tool(args)` calls with a `⎿` result gutter, marked answers, one-line thinking, edit sentences, an interrupt prompt, and a working row with run time and tokens.
@@ -102,7 +103,8 @@ The compiled entry is `dist/extensions/pi-omp-theme.ts` on purpose. Pi loads ext
 npm run verify        # assert the recorded fixes are present + bundle syntax
 npm run test          # theme-switch checks against the real Pi theme module
 npm run testWidgets   # mount the status-line widget and prove it repaints on theme change
-npm run check         # verify + test + testWidgets
+npm run testShrink    # render the status bar while the terminal narrows, path must shrink first
+npm run check         # verify + test + testWidgets + testShrink
 ```
 
 The first launch after a rebuild transpiles the bundle once (a few seconds); jiti caches the result for later launches.
@@ -322,7 +324,8 @@ The extension does not implement telemetry. The optional welcome presentation re
 npm run verify          # assert the recorded fixes are present + bundle syntax
 npm run test            # theme-switch checks against the real Pi theme module
 npm run testWidgets     # mount the status-line widget and prove it repaints on theme change
-npm run check           # verify + test + testWidgets
+npm run testShrink      # render the status bar while the terminal narrows, path must shrink first
+npm run check           # verify + test + testWidgets + testShrink
 ```
 
 The extension entry is `dist/extensions/pi-omp-theme.ts` on purpose: Pi loads extensions through jiti, which binds the host aliases to the running Pi instance. A compiled `.js` entry next to a checkout's own copy of Pi can bind the extension to a second Pi instance and silently miss the TUI.

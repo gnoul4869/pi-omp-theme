@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here. This project versions itself independently; the entries below `0.1.0` are inherited from the MIT-licensed package this extension builds on.
 
+## [0.2.0] — 2026-11-01
+
+### Changed
+
+- The status bar now gives way on the project path before anything else. As the terminal narrows, leading folders drop one at a time (`📁 D:\Google Drive\Projects\Python\J.A.D.A.I v2` → `📁 …\Projects\Python\J.A.D.A.I v2` → `📁 …\Python\J.A.D.A.I v2` → `📁 J.A.D.A.I v2`); only once the path is down to the project folder name do the other segments compact or move to the second row.
+
+### Added
+
+- `scripts/status-shrink.test.mjs` (`npm run testShrink`): renders the status bar against stub Pi modules while the width decreases and asserts the path collapses level by level, that no other segment compacts before the path is exhausted, and that the row never overflows the terminal.
+- `scripts/lib/stub-pi-tui.mjs`, `scripts/lib/stub-pi-agent.mjs`, `scripts/lib/stub-loader.mjs`: minimal Pi host stubs so the bundle can be rendered in tests without a Pi install.
+
 ## [0.1.0]
 
 First standalone release of `pi-omp-theme`, built on `@nguyenquangthai/pi-omp-theme` 1.0.26.
